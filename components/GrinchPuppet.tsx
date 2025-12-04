@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface GrinchPuppetProps {
   mediaSrc: string;
@@ -8,6 +8,13 @@ interface GrinchPuppetProps {
 }
 
 export const GrinchPuppet: React.FC<GrinchPuppetProps> = ({ mediaSrc, mediaType, isSpeaking, videoRef }) => {
+  // Cargar el primer frame del video cuando se monta el componente
+  useEffect(() => {
+    if (mediaType === 'video' && videoRef?.current) {
+      const video = videoRef.current;
+      video.currentTime = 0.1;
+    }
+  }, [mediaSrc, mediaType, videoRef]);
   return (
     <div className="relative w-full max-w-md mx-auto aspect-square group">
       {/* Glow Effect behind the Grinch */}
@@ -29,7 +36,9 @@ export const GrinchPuppet: React.FC<GrinchPuppetProps> = ({ mediaSrc, mediaType,
             src={mediaSrc}
             className="w-full h-full object-cover"
             playsInline
+            preload="auto"
             ref={videoRef}
+            muted
           />
         ) : (
           <img 

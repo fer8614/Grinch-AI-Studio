@@ -28,7 +28,7 @@ Con nuestro bono especial de Guía para hacer tus amigurumis más grandes con el
 `;
 
 // Placeholder media if user doesn't upload one
-const DEFAULT_VIDEO = "/WhatsApp%20Video%202025-12-03%20at%209.26.28%20PM.mp4";
+const DEFAULT_VIDEO = "/grinch-video.mp4";
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1606822369666-821763784158?q=80&w=1000&auto=format&fit=crop"; 
 
 const App: React.FC = () => {
@@ -97,6 +97,7 @@ const App: React.FC = () => {
       };
 
       videoEl.currentTime = 0;
+      videoEl.muted = false; // Activar audio al reproducir
       videoEl.removeEventListener('ended', handleEnded);
       videoEl.addEventListener('ended', handleEnded);
 
@@ -130,8 +131,6 @@ const App: React.FC = () => {
           </h1>
           <p className="text-yellow-300 text-2xl md:text-3xl font-semibold drop-shadow-[0_2px_2px_rgba(0,0,0,0.6)]">Curso de Amigurumi Navideño</p>
         </header>
-
-        {/* Control Panel / Upload */}
         
 
         {/* Avatar Display */}
