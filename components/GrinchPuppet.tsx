@@ -1,11 +1,13 @@
 import React from 'react';
 
 interface GrinchPuppetProps {
-  imageSrc: string;
+  mediaSrc: string;
+  mediaType: 'image' | 'video';
   isSpeaking: boolean;
+  videoRef?: React.RefObject<HTMLVideoElement>;
 }
 
-export const GrinchPuppet: React.FC<GrinchPuppetProps> = ({ imageSrc, isSpeaking }) => {
+export const GrinchPuppet: React.FC<GrinchPuppetProps> = ({ mediaSrc, mediaType, isSpeaking, videoRef }) => {
   return (
     <div className="relative w-full max-w-md mx-auto aspect-square group">
       {/* Glow Effect behind the Grinch */}
@@ -22,11 +24,20 @@ export const GrinchPuppet: React.FC<GrinchPuppetProps> = ({ imageSrc, isSpeaking
           animation: isSpeaking ? 'bounceTalk 0.4s infinite alternate' : 'none'
         }}
       >
-        <img 
-          src={imageSrc} 
-          alt="Grinch Avatar" 
-          className="w-full h-full object-cover"
-        />
+        {mediaType === 'video' ? (
+          <video
+            src={mediaSrc}
+            className="w-full h-full object-cover"
+            playsInline
+            ref={videoRef}
+          />
+        ) : (
+          <img 
+            src={mediaSrc} 
+            alt="Grinch Avatar" 
+            className="w-full h-full object-cover"
+          />
+        )}
         
         {/* Mouth overlay simulation (simple opacity change to simulate movement if needed, 
             but the bounce usually looks funnier/better for puppets) */}

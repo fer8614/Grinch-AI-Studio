@@ -1,85 +1,119 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { generateGrinchSpeech } from './services/geminiService';
 import { GrinchPuppet } from './components/GrinchPuppet';
 import { ScriptCard } from './components/ScriptCard';
 import { AvatarState } from './types';
 
 // The script provided in the prompt
-const GRINCH_SCRIPT = `¡ALTO AHÍ, HUMANO TEJEDOR! 
-¿Me ves? ¿Crees que aparecí así de perfecto, gruñón y esponjocito por arte de magia?
-¡JA! Ni que fuera Santa Claus. 
+const GRINCH_SCRIPT = `Te cuento, en nuestro Taller Online para tejer el Grinch
 
-A mí me tejieron siguiendo un curso tan fácil que hasta yo podría hacerlo… si no me diera pereza, claro. 
-Tiene videos paso a paso, acompañamiento, y te explican todo tan clarito que hasta tu suegra lo entendería. 
+✅ Aprenderás a elegir los materiales correctos: tipos de hilos, lanas y las agujas de crochet ideales para que tu Grinch quede firme, definido y con acabado profesional.
 
-¿Quieres hacer tu propio Grinch?
-Pues deja de mirar y ponte a tejer, que ya casi es Navidad y tú sigues ‘pensándolo’.
-Comenta GRINCH y te mando el curso antes de que me enoje… más. 
+✅ Dominarás los puntos y técnicas esenciales para tejer esta pieza paso a paso, aunque seas principiante. Te llevamos de la mano para que cada detalle quede perfecto.
 
-Y recuerda: si no lo compras tú… igual lo va a comprar tu vecina.`;
+✅ Seguirás un paso a paso 100% en video Full HD, donde podrás ver claramente cada movimiento y repetirlo las veces que necesites hasta terminar tu Grinch perfecto.
 
-// Placeholder image if user doesn't upload one, using a generic crochet toy or similar
+🤗 Y por supuesto, NUNCA ESTARÁS SOLA contarás con apoyo cercano en una comunidad VIP donde te acompañaremos y responderemos todas tus dudas con cariño y compromiso.
+
+¡Y AÚN HAY MÁS! Por realizar la compra el día de HOY recibirás los siguientes 7  REGALOS completamente gratis 🎁👇🏻
+
+ 🎁 1: Tutorial de tapete navideño
+ 🎁 2: Guía de lectura de patrones escritos
+ 🎁 3: Guía para hacer tus amigurumis más grandes con el mismo patrón
+ 🎁  4: Patrón escrito del Grinch
+ 🎁  5: Patrones de virgencitas
+ 🎁  6: Guía de fotografía de producto
+ 🎁  7: Guía básica de empaque para emprendedoras
+ 
+Con nuestro bono especial de Guía para hacer tus amigurumis más grandes con el mismo patrón lograrás crear un grinch gigante
+`;
+
+// Placeholder media if user doesn't upload one
+const DEFAULT_VIDEO = "/WhatsApp%20Video%202025-12-03%20at%209.26.28%20PM.mp4";
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1606822369666-821763784158?q=80&w=1000&auto=format&fit=crop"; 
 
 const App: React.FC = () => {
   const [avatarState, setAvatarState] = useState<AvatarState>(AvatarState.IDLE);
-  const [imageSrc, setImageSrc] = useState<string>(DEFAULT_IMAGE);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const audioSourceRef = useRef<AudioBufferSourceNode | null>(null);
+  const [mediaSrc, setMediaSrc] = useState<string>(DEFAULT_VIDEO);
+  const [mediaType, setMediaType] = useState<'image' | 'video'>('video');
+  const mediaObjectUrlRef = useRef<string | null>(null);
+  const videoElementRef = useRef<HTMLVideoElement | null>(null);
 
-  // Initialize Audio Context on user interaction to comply with browser policies
-  const initAudio = () => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
-    }
-    if (audioContextRef.current.state === 'suspended') {
-      audioContextRef.current.resume();
+  const stopVideoPlayback = () => {
+    if (videoElementRef.current) {
+      videoElementRef.current.pause();
+      videoElementRef.current.currentTime = 0;
     }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    return () => {
+      stopVideoPlayback();
+      if (mediaObjectUrlRef.current) {
+        URL.revokeObjectURL(mediaObjectUrlRef.current);
+      }
+    };
+  }, []);
+
+  const handleMediaUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        if (ev.target?.result) {
-          setImageSrc(ev.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
+      if (mediaObjectUrlRef.current) {
+        URL.revokeObjectURL(mediaObjectUrlRef.current);
+        mediaObjectUrlRef.current = null;
+      }
+
+      const objectUrl = URL.createObjectURL(file);
+      mediaObjectUrlRef.current = objectUrl;
+
+      if (file.type.startsWith('video/')) {
+        setMediaType('video');
+        setMediaSrc(objectUrl);
+      } else {
+        setMediaType('image');
+        setMediaSrc(objectUrl);
+        stopVideoPlayback();
+      }
     }
+    e.target.value = '';
   };
 
   const handleSpeak = async () => {
-    initAudio();
-    
-    // Stop any current audio
-    if (audioSourceRef.current) {
-      audioSourceRef.current.stop();
-      audioSourceRef.current = null;
-    }
+    stopVideoPlayback();
 
     try {
-      setAvatarState(AvatarState.LOADING);
-      
-      const audioBuffer = await generateGrinchSpeech(GRINCH_SCRIPT);
-      
-      if (audioContextRef.current) {
-        const source = audioContextRef.current.createBufferSource();
-        source.buffer = audioBuffer;
-        source.connect(audioContextRef.current.destination);
-        
-        source.onended = () => {
-          setAvatarState(AvatarState.IDLE);
-        };
+      if (mediaType !== 'video' || mediaSrc !== DEFAULT_VIDEO) {
+        setMediaType('video');
+        setMediaSrc(DEFAULT_VIDEO);
+      }
 
-        audioSourceRef.current = source;
-        source.start();
-        setAvatarState(AvatarState.SPEAKING);
+      const videoEl = videoElementRef.current;
+      if (!videoEl) {
+        throw new Error('No se encontró el elemento de video');
+      }
+
+      const handleEnded = () => {
+        setAvatarState(AvatarState.IDLE);
+        videoEl.removeEventListener('ended', handleEnded);
+      };
+
+      videoEl.currentTime = 0;
+      videoEl.removeEventListener('ended', handleEnded);
+      videoEl.addEventListener('ended', handleEnded);
+
+      const playPromise = videoEl.play();
+      setAvatarState(AvatarState.SPEAKING);
+
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch((err) => {
+          console.error('No se pudo reproducir el video automáticamente:', err);
+          setAvatarState(AvatarState.ERROR);
+          setTimeout(() => setAvatarState(AvatarState.IDLE), 3000);
+        });
       }
     } catch (error) {
       console.error(error);
       setAvatarState(AvatarState.ERROR);
+      stopVideoPlayback();
       setTimeout(() => setAvatarState(AvatarState.IDLE), 3000);
     }
   };
@@ -94,23 +128,20 @@ const App: React.FC = () => {
           <h1 className="text-4xl md:text-6xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] mb-2">
             El Grinch Tejedor
           </h1>
-          <p className="text-green-200 text-lg">Curso de Amigurumi Navideño</p>
+          <p className="text-yellow-300 text-2xl md:text-3xl font-semibold drop-shadow-[0_2px_2px_rgba(0,0,0,0.6)]">Curso de Amigurumi Navideño</p>
         </header>
 
         {/* Control Panel / Upload */}
-        <div className="mb-8 w-full max-w-md bg-white/10 backdrop-blur-md rounded-lg p-4 flex flex-col items-center gap-4 border border-white/20">
-            <label className="flex flex-col items-center cursor-pointer group">
-                <span className="text-sm font-semibold mb-2 group-hover:text-green-300 transition-colors">📸 Sube tu foto del Grinch</span>
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                <div className="px-4 py-2 bg-white/20 rounded-full text-xs hover:bg-white/30 transition">
-                    Seleccionar Archivo
-                </div>
-            </label>
-        </div>
+        
 
         {/* Avatar Display */}
         <div className="w-full mb-8">
-           <GrinchPuppet imageSrc={imageSrc} isSpeaking={avatarState === AvatarState.SPEAKING} />
+           <GrinchPuppet
+             mediaSrc={mediaSrc}
+             mediaType={mediaType}
+             isSpeaking={avatarState === AvatarState.SPEAKING}
+             videoRef={videoElementRef}
+           />
         </div>
 
         {/* Action Button */}
