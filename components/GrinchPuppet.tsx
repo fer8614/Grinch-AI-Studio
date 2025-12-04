@@ -1,0 +1,43 @@
+import React from 'react';
+
+interface GrinchPuppetProps {
+  imageSrc: string;
+  isSpeaking: boolean;
+}
+
+export const GrinchPuppet: React.FC<GrinchPuppetProps> = ({ imageSrc, isSpeaking }) => {
+  return (
+    <div className="relative w-full max-w-md mx-auto aspect-square group">
+      {/* Glow Effect behind the Grinch */}
+      <div className={`absolute inset-0 rounded-full blur-2xl transition-opacity duration-300 ${isSpeaking ? 'bg-red-500/30 opacity-100 animate-pulse' : 'bg-green-500/20 opacity-50'}`}></div>
+      
+      {/* The Avatar Image */}
+      <div 
+        className={`
+          relative w-full h-full rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20
+          transition-transform duration-100 ease-in-out origin-bottom
+          ${isSpeaking ? 'animate-bounce-talk' : 'scale-100'}
+        `}
+        style={{
+          animation: isSpeaking ? 'bounceTalk 0.4s infinite alternate' : 'none'
+        }}
+      >
+        <img 
+          src={imageSrc} 
+          alt="Grinch Avatar" 
+          className="w-full h-full object-cover"
+        />
+        
+        {/* Mouth overlay simulation (simple opacity change to simulate movement if needed, 
+            but the bounce usually looks funnier/better for puppets) */}
+      </div>
+
+      <style>{`
+        @keyframes bounceTalk {
+          0% { transform: scale(1) translateY(0); }
+          100% { transform: scale(1.05) translateY(-10px); }
+        }
+      `}</style>
+    </div>
+  );
+};

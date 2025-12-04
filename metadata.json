@@ -1,0 +1,5 @@
+{
+  "name": "Grinch Tejedor Avatar",
+  "description": "A talking avatar application using Gemini TTS to bring a crocheted Grinch to life.",
+  "requestFramePermissions": []
+}
