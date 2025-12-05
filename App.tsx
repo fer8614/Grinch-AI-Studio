@@ -93,6 +93,8 @@ const App: React.FC = () => {
 
       const handleEnded = () => {
         setAvatarState(AvatarState.IDLE);
+        videoEl.muted = true; // Silenciar para permitir precarga
+        videoEl.currentTime = 0; // Reiniciar al inicio
         videoEl.removeEventListener('ended', handleEnded);
       };
 
