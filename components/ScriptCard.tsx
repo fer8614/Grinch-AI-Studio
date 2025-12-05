@@ -31,7 +31,7 @@ export const ScriptCard: React.FC<ScriptCardProps> = ({ text }) => {
          </a>
        </div>
        <div className="mt-6 flex flex-col items-center">
-         <p className="text-green-600 font-bold text-lg mb-2">🔒 Compra Segura. Descarga Inmediata ⚡</p>
+         <p className="text-green-600 font-bold text-lg mb-2">🔒Compra Segura. ⚡Descarga Inmediata.</p>
          <img src="/7-dias-de-garantia.png" alt="7 días de garantía" className="max-w-[150px] h-auto" />
        </div>
     </div>
