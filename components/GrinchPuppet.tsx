@@ -43,7 +43,8 @@ export const GrinchPuppet: React.FC<GrinchPuppetProps> = ({ mediaSrc, mediaType,
             src={mediaSrc}
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${isSpeaking ? 'opacity-100' : 'opacity-0'}`}
             playsInline
-            preload="auto"
+            webkit-playsinline="true"
+            preload="metadata"
             ref={videoRef}
             muted
           />

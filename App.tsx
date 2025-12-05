@@ -96,12 +96,23 @@ const App: React.FC = () => {
         videoEl.muted = true; // Silenciar para permitir precarga
         videoEl.currentTime = 0; // Reiniciar al inicio
         videoEl.removeEventListener('ended', handleEnded);
+        videoEl.removeEventListener('pause', handlePause);
+      };
+
+      // Respaldo para iOS que a veces no dispara 'ended'
+      const handlePause = () => {
+        // Solo resetear si el video llegó al final (con margen de 0.5s)
+        if (videoEl.currentTime >= videoEl.duration - 0.5) {
+          handleEnded();
+        }
       };
 
       videoEl.currentTime = 0;
       videoEl.muted = false; // Activar audio al reproducir
       videoEl.removeEventListener('ended', handleEnded);
+      videoEl.removeEventListener('pause', handlePause);
       videoEl.addEventListener('ended', handleEnded);
+      videoEl.addEventListener('pause', handlePause);
 
       const playPromise = videoEl.play();
       setAvatarState(AvatarState.SPEAKING);
