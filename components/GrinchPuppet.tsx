@@ -39,6 +39,7 @@ export const GrinchPuppet: React.FC<GrinchPuppetProps> = ({ mediaSrc, mediaType,
             preload="auto"
             ref={videoRef}
             muted
+            poster="/grinch1.png"
           />
         ) : (
           <img 
