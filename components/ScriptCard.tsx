@@ -18,7 +18,7 @@ export const ScriptCard: React.FC<ScriptCardProps> = ({ text }) => {
          {text}
        </p>
 
-       <div className="mt-6 flex flex-col items-center">
+       <div className="mt-6 flex flex-col items-center text-center">
          <h4 className="text-emerald-700 font-bold text-xl mb-4">Conoce nuestra plataforma de aprendizaje</h4>
          <img src="/grinch.jpeg" alt="Grinch Amigurumi" className="rounded-lg shadow-lg max-w-full h-auto" />
        </div>
@@ -31,7 +31,7 @@ export const ScriptCard: React.FC<ScriptCardProps> = ({ text }) => {
          </a>
        </div>
        <div className="mt-6 flex flex-col items-center">
-         <p className="text-green-600 font-bold text-lg mb-2">🔒 Compra Segura y Descarga Inmediata ⚡</p>
+         <p className="text-green-600 font-bold text-lg mb-2">🔒 Compra Segura. Descarga Inmediata ⚡</p>
          <img src="/7-dias-de-garantia.png" alt="7 días de garantía" className="max-w-[150px] h-auto" />
        </div>
     </div>
