@@ -31,21 +31,21 @@ export const GrinchPuppet: React.FC<GrinchPuppetProps> = ({ mediaSrc, mediaType,
           animation: isSpeaking ? 'bounceTalk 0.4s infinite alternate' : 'none'
         }}
       >
-        {mediaType === 'video' ? (
+        {/* Imagen de poster siempre visible cuando no está hablando */}
+        <img 
+          src="/grinch1.png" 
+          alt="Grinch Avatar" 
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${isSpeaking ? 'opacity-0' : 'opacity-100'}`}
+        />
+        {/* Video oculto hasta que se reproduce */}
+        {mediaType === 'video' && (
           <video
             src={mediaSrc}
-            className="w-full h-full object-cover"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${isSpeaking ? 'opacity-100' : 'opacity-0'}`}
             playsInline
             preload="auto"
             ref={videoRef}
             muted
-            poster="/grinch1.png"
-          />
-        ) : (
-          <img 
-            src={mediaSrc} 
-            alt="Grinch Avatar" 
-            className="w-full h-full object-cover"
           />
         )}
         
