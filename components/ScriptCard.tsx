@@ -18,13 +18,14 @@ export const ScriptCard: React.FC<ScriptCardProps> = ({ text }) => {
          {text}
        </p>
 
-       <div className="mt-6 flex justify-center">
+       <div className="mt-6 flex flex-col items-center">
+         <h4 className="text-emerald-700 font-bold text-xl mb-4">Conoce nuestra plataforma de aprendizaje</h4>
          <img src="/grinch.jpeg" alt="Grinch Amigurumi" className="rounded-lg shadow-lg max-w-full h-auto" />
        </div>
 
 
        <div className="mt-6 pt-4 border-t border-gray-200 text-center">
-         <p className="text-sm text-green-600 uppercase tracking-widest font-bold mb-2">Da click en el boton <span className="text-red-600">rojo</span> para ver el precio en tu pais</p>
+         <p className="text-sm text-green-700 uppercase tracking-widest font-bold mb-2">Da click en el boton <span className="text-red-600">rojo</span> para ver el precio en tu pais</p>
          <a href="https://go.hotmart.com/B103206395F?ap=85aa" target="_blank" rel="noopener noreferrer" className="inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full transform transition hover:scale-105 shadow-xl animate-pulse">
            QUIERO EL GRINCH
          </a>
